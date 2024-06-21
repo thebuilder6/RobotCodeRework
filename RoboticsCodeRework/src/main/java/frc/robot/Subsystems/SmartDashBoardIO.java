@@ -60,6 +60,15 @@ public class SmartDashBoardIO implements Subsystem
 
     }
 
+    private void subsystemStatus()
+    {
+        SmartDashboard.put
+        for (Subsystem subsystem : SubsystemManager.getSubsystems())
+        {
+            SmartDashboard.putBooleanArray(subsystem.getName(), subsystem.go());
+        }
+    }
+
     @Override
     public void update()
     {
