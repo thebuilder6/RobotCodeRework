@@ -4,57 +4,122 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.RobotDefinitions.*;
+import frc.robot.Subsystems.SubsystemManager;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.AutoMissionChooser;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot
+{
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   private AutoMissionExecutor autoMissionExecutor = new AutoMissionExecutor();
   private AutoMissionChooser autoMissionChooser = new AutoMissionChooser();
-  
-  @Override
-  public void robotInit() {}
+
+  private static RobotDefinition activeBot;
+
+  public static RobotDefinition getActiveBot()
+  {
+    return activeBot;
+  }
+
+  private Map<String, Supplier<RobotDefinition>> robotMap = new HashMap<>();
+  // robotMemoryName = robot on board memory name
+  public String defaultRobotName = "GyroBot";
+  public String robotMemoryName = "SimulatorBot";
+
+  public Robot()
+  {
+    robotMap.put("GyroBot", () -> new GyroBot());
+    robotMap.put("AiodeComp", () -> new AiodeComp());
+    robotMap.put("SwerveBot", () -> new SwerveBot());
+    robotMap.put("SimulatorBot", () -> new SimulatorBot());
+    // Add more robot types as needed
+  }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotInit()
+  {
+    // robotMemoryName = robot on board memory name
+    // if robotMemoryName is not found, use defaultRobotname and ask to set robot Name to memory
+    activeBot = robotMap.getOrDefault(robotMemoryName, () -> {
+      System.out.println("Unknown robot type, using default");
+      return robotMap.get(defaultRobotName).get();
+    }).get();
+
+    activeBot.initalizeSubsystems();
+
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void robotPeriodic()
+  {
+    SubsystemManager.updateAllSubsystems();
+
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousInit()
+  {
+  }
 
   @Override
-  public void teleopInit() {}
+  public void autonomousPeriodic()
+  {
+  }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopInit()
+  {
+  }
 
   @Override
-  public void disabledInit() {}
+  public void teleopPeriodic()
+  {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledInit()
+  {
+  }
 
   @Override
-  public void testInit() {}
+  public void disabledPeriodic()
+  {
+  }
 
   @Override
-  public void testPeriodic() {}
+  public void testInit()
+  {
+  }
 
   @Override
-  public void simulationInit() {}
+  public void testPeriodic()
+  {
+  }
 
   @Override
-  public void simulationPeriodic() {}
+  public void simulationInit()
+  {
+  }
+
+  @Override
+  public void simulationPeriodic()
+  {
+  }
 }
