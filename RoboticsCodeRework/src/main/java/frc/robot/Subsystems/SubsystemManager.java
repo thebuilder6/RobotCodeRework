@@ -20,6 +20,14 @@ public class SubsystemManager
         }
     }
 
+    public static void initializeAllSubsystems()
+    {
+        for (Subsystem subsystem : subsystems)
+        {
+            subsystem.initialize();
+        }
+    }
+
     public static void logAllSubsystems()
     {
         for (Subsystem subsystem : subsystems)

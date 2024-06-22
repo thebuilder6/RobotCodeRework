@@ -1,6 +1,7 @@
 package frc.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Settings;
 
 public class SmartDashBoardIO implements Subsystem
 {
@@ -16,10 +17,26 @@ public class SmartDashBoardIO implements Subsystem
         return instance;
     }
 
+    private boolean isActive;
+
     private SmartDashBoardIO()
     {
         SubsystemManager.registerSubsystem(this);
-        initialize();
+    }
+
+    @Override
+    public void initialize()
+    {
+        if (Settings.getSetting("SMARTDASHBOARDIO") != null && Settings.getSetting("SMARTDASHBOARDIO").equals("DISABLE"))
+        {
+            isActive = false;
+            return;
+        }
+        SmartDashboard.putNumber("Input1", 0);
+        SmartDashboard.putNumber("Input2", 0);
+        SmartDashboard.putNumber("output", 0);
+        SmartDashboard.putBoolean("calculate", false);
+        isActive = true;
     }
 
     @Override
@@ -29,23 +46,15 @@ public class SmartDashBoardIO implements Subsystem
     }
 
     @Override
-    public boolean go()
+    public boolean isActive()
     {
-        return true;
+        return isActive;
     }
 
     @Override
     public void log()
     {
 
-    }
-
-    private void initialize()
-    {
-        SmartDashboard.putNumber("Input1", 0);
-        SmartDashboard.putNumber("Input2", 0);
-        SmartDashboard.putNumber("output", 0);
-        SmartDashboard.putBoolean("calculate", false);
     }
 
     private void calculator()
@@ -58,15 +67,6 @@ public class SmartDashBoardIO implements Subsystem
             SmartDashboard.putBoolean("calculate", false);
         }
 
-    }
-
-    private void subsystemStatus()
-    {
-        SmartDashboard.put
-        for (Subsystem subsystem : SubsystemManager.getSubsystems())
-        {
-            SmartDashboard.putBooleanArray(subsystem.getName(), subsystem.go());
-        }
     }
 
     @Override

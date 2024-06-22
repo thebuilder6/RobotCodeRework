@@ -1,5 +1,6 @@
 package frc.robot.Subsystems;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Robot;
 import frc.robot.Settings;
 import frc.robot.Devices.Controller;
@@ -24,15 +25,30 @@ public class Control implements Subsystem
     private Control()
     {
         SubsystemManager.registerSubsystem(this);
-        int numberOfControllers = Integer.parseInt(Settings.settingsList.get("NUMBEROFCONTROLLERS"));
-        if (numberOfControllers >= 1)
+    }
+
+    DriveBase driveBase;
+
+    private boolean isActive;
+
+    public void initialize()
+    {
+        if (Settings.getSetting("CONTROL").equals("DISABLE"))
         {
-            driverController = new Controller(Settings.portList.get("XBOX_DRIVER_CONTROLLER"));
+            isActive = false;
+            return;
         }
-        if (numberOfControllers >= 2)
+        if (Settings.getSetting("PORTMAP.XBOX_DRIVER_CONTROLLER") == null)
         {
-            operatorController = new Controller(Settings.portList.get("XBOX_OPERATOR_CONTROLLER"));
+            driverController = new Controller(Settings.getSetting("PORTMAP.XBOX_DRIVER_CONTROLLER"));
         }
+        if (Settings.getSetting("PORTMAP.XBOX_OPERATOR_CONTROLLER") == null)
+        {
+            operatorController = new Controller(Settings.getSetting("PORTMAP.XBOX_OPERATOR_CONTROLLER"));
+        }
+        driveBase = DriveBase.getInstance();
+
+        isActive = true;
     }
 
     @Override
@@ -42,9 +58,9 @@ public class Control implements Subsystem
     }
 
     @Override
-    public boolean go()
+    public boolean isActive()
     {
-        return true;
+        return isActive;
     }
 
     @Override
@@ -53,9 +69,25 @@ public class Control implements Subsystem
 
     }
 
+    private void driveBaseControl()
+    {
+        if (driveBase.isActive() && driverController != null)
+        {
+
+        }
+    }
+
+    public void initSendable(SendableBuilder builder)
+    {
+        builder.setSmartDashboardType("Control");
+        builder.addBooleanProperty("isActive", this::isActive, isActive -> this.isActive = isActive);
+        builder.addStringProperty("XBOX_DRIVER_CONTROLLER", () -> Settings.getSetting("PORTMAP.XBOX_DRIVER_CONTROLLER"), null);
+    }
+
     @Override
     public void update()
     {
+        driveBaseControl();
 
     }
 

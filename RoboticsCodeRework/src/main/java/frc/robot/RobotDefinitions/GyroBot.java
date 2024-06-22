@@ -1,6 +1,7 @@
 package frc.robot.RobotDefinitions;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import frc.robot.Settings;
 import frc.robot.Subsystems.DriveBase;
@@ -9,43 +10,31 @@ import frc.robot.Subsystems.SmartDashBoardIO;
 public class GyroBot implements RobotDefinition
 {
 
-    HashMap<String, String> settings = new HashMap<String, String>();
+    private static Map<String, Object> settings = new HashMap<>();
 
-    public enum BotSettings
+    public static void loadSettings()
     {
-        NUMBEROFCONTROLLERS("1"),
-        GYRO("enabled");
+        // Load settings from a file or any other source
+        // and populate the settings map
+        settings.put("MOTORCONTROLLERTYPE", "VICTORSPX");
 
-        String value;
-
-        BotSettings(String value)
+        for (PortMap portMap : PortMap.values())
         {
-            this.value = value;
+            settings.put("PORTMAP." + portMap.name(), Integer.toString(portMap.value));
         }
 
-        public String getValue()
-        {
-            return value;
-        }
+        // ...
 
     }
 
     public boolean transferSettings()
     {
-        for (BotSettings botSetting : BotSettings.values())
-        {
-            settings.put(botSetting.name(), botSetting.value);
-        }
+        loadSettings();
         Settings.appendBotSettings(settings);
-        for (PortMap portMap : PortMap.values())
-        {
-            portList.put(portMap.name(), portMap.value);
-        }
-        Settings.appendPortMap(portList);
         return true;
     }
 
-    public boolean initalizeSubsystems()
+    public boolean initializeSubsystems()
     {
         transferSettings();
 

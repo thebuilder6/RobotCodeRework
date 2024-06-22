@@ -8,19 +8,28 @@ import frc.robot.Subsystems.SmartDashBoardIO;
 
 public class SimulatorBot implements RobotDefinition
 {
-    HashMap<String, String> settings = new HashMap<String, String>();
-    HashMap<String, Integer> portList = new HashMap<String, Integer>();
+    private static Map<String, Object> settings = new HashMap<>();
 
-    public enum BotSettings
+    public static void loadSettings()
     {
-        NUMBEROFCONTROLLERS("1");
+        // Load settings from a file or any other source
+        // and populate the settings map
+        settings.put("NUMBEROFCONTROLLERS", 2);
+        settings.put("DRIVEBASE", "DISABLE");
 
-        String value;
-
-        BotSettings(String value)
+        for (PortMap portMap : PortMap.values())
         {
-            this.value = value;
+            settings.put("PORTMAP." + portMap.name(), Integer.toString(portMap.value));
         }
+
+        // ...
+    }
+
+    public static boolean transferSettings()
+    {
+        loadSettings();
+        Settings.appendBotSettings(settings);
+        return true;
     }
 
     public enum PortMap
@@ -35,22 +44,7 @@ public class SimulatorBot implements RobotDefinition
         }
     }
 
-    private boolean transferSettings()
-    {
-        for (BotSettings botSetting : BotSettings.values())
-        {
-            settings.put(botSetting.name(), botSetting.value);
-        }
-        Settings.appendBotSettings(settings);
-        for (PortMap portMap : PortMap.values())
-        {
-            portList.put(portMap.name(), portMap.value);
-        }
-        Settings.appendPortMap(portList);
-        return true;
-    }
-
-    public boolean initalizeSubsystems()
+    public boolean initializeSubsystems()
     {
         transferSettings();
 

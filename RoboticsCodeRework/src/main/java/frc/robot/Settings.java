@@ -6,41 +6,35 @@ import java.util.Map;
 public class Settings
 {
     //Todo Settings Hashmap
+    private static Map<String, Object> settings = new HashMap<>();
 
-    public static HashMap<String, String> settingsList = new HashMap<String, String>();
-    public static HashMap<String, Integer> portList = new HashMap<String, Integer>();
-
-    public static void startUp()
+    public static void loadSettings()
     {
-        for (GeneralSettings generalSetting : GeneralSettings.values())
-        {
-            settingsList.put(generalSetting.name(), generalSetting.value);
-        }
+        // Load settings from a file or any other source
+        // and populate the settings map
+        settings.put("key1", "value1");
+        settings.put("key2", 12345);
+        // ...
     }
 
-    public enum GeneralSettings
+    public static <T> T getSetting(String key)
     {
-        DEBUG("false");
-
-        String value;
-
-        GeneralSettings(String value)
-        {
-            this.value = value;
-        }
+        return (T)settings.get(key);
     }
 
-    public static boolean appendBotSettings(HashMap<String, String> botSettings)
+    public static <T> T getSetting(String key, Class<T> type)
     {
-
-        settingsList.putAll(botSettings);
-        return true;
+        return type.cast(settings.get(key));
     }
 
-    public static boolean appendPortMap(HashMap<String, Integer> portMap)
+    public static <T> void setSetting(String key, T value)
     {
-        portList.putAll(portMap);
-        return true;
+        settings.put(key, value);
+    }
+
+    public static <T> void appendBotSettings(Map<String, T> botSettings)
+    {
+        settings.putAll(botSettings);
     }
 
 }

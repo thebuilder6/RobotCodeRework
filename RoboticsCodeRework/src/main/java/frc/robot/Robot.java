@@ -10,6 +10,7 @@ import frc.robot.Subsystems.SubsystemManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import frc.robot.Settings;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -41,7 +42,7 @@ public class Robot extends TimedRobot
   private Map<String, Supplier<RobotDefinition>> robotMap = new HashMap<>();
   // robotMemoryName = robot on board memory name
   public String defaultRobotName = "GyroBot";
-  public String robotMemoryName = "SimulatorBot";
+  public String robotMemoryName = "GyroBot";
 
   public Robot()
   {
@@ -61,16 +62,17 @@ public class Robot extends TimedRobot
       System.out.println("Unknown robot type, using default");
       return robotMap.get(defaultRobotName).get();
     }).get();
+    Settings.getSetting("NeedstobehereWhyIdontknow");
+    activeBot.initializeSubsystems();
 
-    activeBot.initalizeSubsystems();
-
+    SubsystemManager.initializeAllSubsystems();
   }
 
   @Override
   public void robotPeriodic()
   {
     SubsystemManager.updateAllSubsystems();
-
+    SubsystemManager.logAllSubsystems();
   }
 
   @Override

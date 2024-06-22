@@ -5,7 +5,7 @@ import frc.robot.Subsystems.DriveBase;
 public class AiodeComp implements RobotDefinition
 {
 
-    public boolean initalizeSubsystems()
+    public boolean initializeSubsystems()
     {
         // Add subsystems here
         DriveBase.getInstance();

@@ -33,7 +33,7 @@ public class SwerveBot implements RobotDefinition
         }
     }
 
-    public boolean initalizeSubsystems()
+    public boolean initializeSubsystems()
     {
         for (BotSettings botSetting : BotSettings.values())
         {
