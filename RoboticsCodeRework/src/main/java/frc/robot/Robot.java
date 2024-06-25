@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import frc.robot.Settings;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Auto.AutoMissionExecutor;
 import frc.robot.Auto.AutoMissionChooser;
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot
       System.out.println("Unknown robot type, using default");
       return robotMap.get(defaultRobotName).get();
     }).get();
+    SmartDashboard.putString("Active Bot", robotMemoryName);
     Settings.getSetting("NeedstobehereWhyIdontknow");
     activeBot.initializeSubsystems();
 

@@ -7,19 +7,16 @@ import frc.robot.Settings;
 import frc.robot.Subsystems.DriveBase;
 import frc.robot.Subsystems.SmartDashBoardIO;
 
-public class GyroBot implements RobotDefinition
-{
+public class GyroBot implements RobotDefinition {
 
     private static Map<String, Object> settings = new HashMap<>();
 
-    public static void loadSettings()
-    {
+    public static void loadSettings() {
         // Load settings from a file or any other source
         // and populate the settings map
-        settings.put("MOTORCONTROLLERTYPE", "VICTORSPX");
+        settings.put("DRIVEBASE.MOTORCONTROLLER.TYPE", "VICTORSPX");
 
-        for (PortMap portMap : PortMap.values())
-        {
+        for (PortMap portMap : PortMap.values()) {
             settings.put("PORTMAP." + portMap.name(), Integer.toString(portMap.value));
         }
 
@@ -27,15 +24,13 @@ public class GyroBot implements RobotDefinition
 
     }
 
-    public boolean transferSettings()
-    {
+    public boolean transferSettings() {
         loadSettings();
         Settings.appendBotSettings(settings);
         return true;
     }
 
-    public boolean initializeSubsystems()
-    {
+    public boolean initializeSubsystems() {
         transferSettings();
 
         SmartDashBoardIO.getInstance();
@@ -46,8 +41,7 @@ public class GyroBot implements RobotDefinition
 
     HashMap<String, Integer> portList = new HashMap<String, Integer>();
 
-    public enum PortMap
-    {
+    public enum PortMap {
         XBOX_DRIVER_CONTROLLER(0),
         XBOX_OPERATOR_CONTROLLER(1),
 
@@ -84,13 +78,11 @@ public class GyroBot implements RobotDefinition
 
         private final int value;
 
-        PortMap(int value)
-        {
+        PortMap(int value) {
             this.value = value;
         }
 
-        public int getValue()
-        {
+        public int getValue() {
             return value;
         }
     }
