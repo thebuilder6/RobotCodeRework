@@ -1,6 +1,7 @@
 package frc.robot.Devices;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -8,18 +9,20 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import frc.robot.Settings;
 
-public class DrivebaseMotorControllers implements MotorController {
+public class MotorControllersDriveBase implements MotorController {
 
     MotorController motorControllerPair;
+    NeutralMode neutralMode;
 
     //TODO Investigate motor invertion
     //setInverted(InvertType.FollowMaster)
     //setInverted(InvertType.OpposeMaster)
 
-    public DrivebaseMotorControllers(
+    public MotorControllersDriveBase(
             int portNumber,
             int followerPortNumber,
             boolean inverted) {
+        neutralMode = Settings.getSetting("DRIVEBASE.MOTORCONTROLLER.NEUTRALMODE", NeutralMode.class);
         switch (Settings.getSetting("DRIVEBASE.MOTORCONTROLLER.TYPE", String.class)) {
             case "VICTORSPX":
                 motorControllerPair = initializeDualCANVictorSPX(portNumber, followerPortNumber, inverted);
@@ -40,8 +43,8 @@ public class DrivebaseMotorControllers implements MotorController {
             WPI_TalonSRX leaderMotor = new WPI_TalonSRX(portNumber);
             WPI_TalonSRX followerMotor = new WPI_TalonSRX(followerPortNumber);
 
-            leaderMotor.setNeutralMode(NeutralMode.Brake);
-            followerMotor.setNeutralMode(NeutralMode.Brake);
+            leaderMotor.setNeutralMode(neutralMode);
+            followerMotor.setNeutralMode(neutralMode);
 
             followerMotor.follow(leaderMotor);
             leaderMotor.setInverted(inverted);
@@ -62,8 +65,8 @@ public class DrivebaseMotorControllers implements MotorController {
             WPI_VictorSPX leaderMotor = new WPI_VictorSPX(portNumber);
             WPI_VictorSPX followerMotor = new WPI_VictorSPX(followerPortNumber);
 
-            leaderMotor.setNeutralMode(NeutralMode.Brake);
-            followerMotor.setNeutralMode(NeutralMode.Brake);
+            leaderMotor.setNeutralMode(neutralMode);
+            followerMotor.setNeutralMode(neutralMode);
 
             followerMotor.follow(leaderMotor);
             leaderMotor.setInverted(inverted);

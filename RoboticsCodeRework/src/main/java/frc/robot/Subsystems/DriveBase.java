@@ -3,6 +3,7 @@ package frc.robot.Subsystems;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Settings;
+import frc.robot.Devices.MotorControllersDriveBase;
 
 public class DriveBase implements Subsystem {
     private static DriveBase instance = null;
@@ -21,6 +22,8 @@ public class DriveBase implements Subsystem {
 
     private boolean isActive;
     private boolean motorControllersEnabled;
+    private MotorControllersDriveBase motorControllerPairLeft;
+    private MotorControllersDriveBase motorControllerPairRight;
 
     @Override
     public void initialize() {
@@ -42,14 +45,12 @@ public class DriveBase implements Subsystem {
             return;
         } else {
             motorControllersEnabled = true;
-            switch (Settings.getSetting("DRIVEBASE.MOTORCONTROLLER.TYPE", String.class)) {
-                case "SPARKMAX":
-                    //TODO Add SparkMax motor controllers
-                    break;
-                case "VICTORSPX":
-                    //TODO Add VictorSPX motor controllers
-                    break;
-            }
+            motorControllerPairLeft = new MotorControllersDriveBase(
+                    Settings.getSetting("PORTMAP.FrontLeft", Integer.class),
+                    Settings.getSetting("PORTMAP.RearLeft", Integer.class), true);
+            motorControllerPairRight = new MotorControllersDriveBase(
+                    Settings.getSetting("PORTMAP.FrontRight", Integer.class),
+                    Settings.getSetting("PORTMAP.RearRight", Integer.class), false);
         }
 
         isActive = true;
@@ -67,11 +68,9 @@ public class DriveBase implements Subsystem {
 
     @Override
     public void log() {
-        SmartDashboard.putBoolean(getName(), isActive);
-        SmartDashboard.putNumber(getName() + "/FrontLeft", 0);
-        SmartDashboard.putNumber(getName() + "/RearLeft", 0);
-        SmartDashboard.putNumber(getName() + "/FrontRight", 0);
-        SmartDashboard.putNumber(getName() + "/RearRight", 0);
+        SmartDashboard.putBoolean(getName() + "/isActive", isActive);
+        SmartDashboard.putBoolean(getName() + "/LeftIsActive", motorControllerPairLeft != null);
+        SmartDashboard.putBoolean(getName() + "/RightIsActive", motorControllerPairRight != null);
     }
 
     @Override

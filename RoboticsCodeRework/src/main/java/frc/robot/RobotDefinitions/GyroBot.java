@@ -3,6 +3,8 @@ package frc.robot.RobotDefinitions;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import frc.robot.Settings;
 import frc.robot.Subsystems.DriveBase;
 import frc.robot.Subsystems.SmartDashBoardIO;
@@ -15,7 +17,7 @@ public class GyroBot implements RobotDefinition {
         // Load settings from a file or any other source
         // and populate the settings map
         settings.put("DRIVEBASE.MOTORCONTROLLER.TYPE", "VICTORSPX");
-
+        settings.put("DRIVEBASE.NEUTRALMODE", NeutralMode.Brake);
         for (PortMap portMap : PortMap.values()) {
             settings.put("PORTMAP." + portMap.name(), Integer.toString(portMap.value));
         }
