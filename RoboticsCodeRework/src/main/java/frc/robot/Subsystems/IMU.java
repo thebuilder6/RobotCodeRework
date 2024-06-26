@@ -20,7 +20,11 @@ public class IMU implements Subsystem {
     }
 
     public IMU() {
-        SubsystemManager.registerSubsystem(this);
+        if (Settings.getSetting("subsystem_imu_enabled", false)) {
+            SubsystemManager.registerSubsystem(this);
+        } else {
+            isActive = false;
+        }
     }
 
     private boolean isActive;

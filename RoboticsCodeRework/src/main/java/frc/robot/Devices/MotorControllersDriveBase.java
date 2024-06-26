@@ -22,8 +22,8 @@ public class MotorControllersDriveBase implements MotorController {
             int portNumber,
             int followerPortNumber,
             boolean inverted) {
-        neutralMode = Settings.getSetting("DRIVEBASE.MOTORCONTROLLER.NEUTRALMODE", NeutralMode.class);
-        switch (Settings.getSetting("DRIVEBASE.MOTORCONTROLLER.TYPE", String.class)) {
+        neutralMode = Settings.getSetting("drivebase_motorcontroller_neutralmode", NeutralMode.class);
+        switch (Settings.getSetting("drivebase_motor_controller_type", String.class)) {
             case "VICTORSPX":
                 motorControllerPair = initializeDualCANVictorSPX(portNumber, followerPortNumber, inverted);
                 break;

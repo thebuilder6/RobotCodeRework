@@ -9,7 +9,7 @@ import frc.robot.Devices.Controller;
 
 public class Control implements Subsystem {
 
-    public Control getInstance() {
+    public static Control getInstance() {
         if (instance == null) {
             instance = new Control();
         }
@@ -22,7 +22,11 @@ public class Control implements Subsystem {
     private Controller operatorController;
 
     private Control() {
-        SubsystemManager.registerSubsystem(this);
+        if (Settings.getSetting("subsystem_control_enabled", true)) {
+            SubsystemManager.registerSubsystem(this);
+        } else {
+            isActive = false;
+        }
     }
 
     DriveBase driveBase;
@@ -33,20 +37,13 @@ public class Control implements Subsystem {
 
     @Override
     public void initialize() {
-        if (Settings.getSetting("CONTROL").equals("DISABLE")) {
-            isActive = false;
-            return;
-        }
-        hasDriverController = Settings.getSetting("PORTMAP.XBOX_DRIVER_CONTROLLER") != null
-                && Settings.getSetting("PORTMAP.XBOX_DRIVER_CONTROLLER", Integer.class) >= 0;
-        hasOperatorController = Settings.getSetting("PORTMAP.XBOX_OPERATOR_CONTROLLER") != null
-                && Settings.getSetting("PORTMAP.XBOX_OPERATOR_CONTROLLER", Integer.class) >= 0;
-
+        hasDriverController = Settings.getSetting("portmap_xbox_driver_controller", -1) >= 0;
+        hasOperatorController = Settings.getSetting("portmap_xbox_operator_controller", -1) >= 0;
         if (hasDriverController) {
-            driverController = new Controller(Settings.getSetting("PORTMAP.XBOX_DRIVER_CONTROLLER"));
+            driverController = new Controller(Settings.getSetting("portmap_xbox_driver_controller", Integer.class));
         }
         if (hasOperatorController) {
-            operatorController = new Controller(Settings.getSetting("PORTMAP.XBOX_OPERATOR_CONTROLLER"));
+            operatorController = new Controller(Settings.getSetting("portmap_xbox_operator_controller", Integer.class));
         }
         driveBase = DriveBase.getInstance();
 

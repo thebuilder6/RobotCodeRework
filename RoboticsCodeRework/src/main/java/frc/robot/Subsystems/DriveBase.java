@@ -16,8 +16,11 @@ public class DriveBase implements Subsystem {
     }
 
     private DriveBase() {
-        SubsystemManager.registerSubsystem(this);
-
+        if (Settings.getSetting("subsystem_drivebase_enabled", Boolean.class)) {
+            SubsystemManager.registerSubsystem(this);
+        } else {
+            isActive = false;
+        }
     }
 
     private boolean isActive;
@@ -27,30 +30,21 @@ public class DriveBase implements Subsystem {
 
     @Override
     public void initialize() {
-        if (Settings.getSetting("DRIVEBASE") != null && Settings.getSetting("DRIVEBASE").equals("DISABLE")) {
-            isActive = false;
-            return;
-        }
-
-        if ((Settings.getSetting("PORTMAP.FrontLeft") == null) ||
-                (Settings.getSetting("PORTMAP.RearLeft") == null) ||
-                (Settings.getSetting("PORTMAP.FrontRight") == null) ||
-                (Settings.getSetting("PORTMAP.RearRight") == null) ||
-                (Settings.getSetting("PORTMAP.FrontLeft", Integer.class) < 0) ||
-                (Settings.getSetting("PORTMAP.RearLeft", Integer.class) < 0) ||
-                (Settings.getSetting("PORTMAP.FrontRight", Integer.class) < 0) ||
-                (Settings.getSetting("PORTMAP.RearRight", Integer.class) < 0)) {
+        if ((Settings.getSetting("portmap_drive_motor_front_left", -1) < 0) ||
+                (Settings.getSetting("portmap_drive_motor_rear_left", -1) < 0) ||
+                (Settings.getSetting("portmap_drive_motor_front_right", -1) < 0) ||
+                (Settings.getSetting("portmap_drive_motor_rear_right", -1) < 0)) {
             motorControllersEnabled = false;
             isActive = false;
             return;
         } else {
             motorControllersEnabled = true;
             motorControllerPairLeft = new MotorControllersDriveBase(
-                    Settings.getSetting("PORTMAP.FrontLeft", Integer.class),
-                    Settings.getSetting("PORTMAP.RearLeft", Integer.class), true);
+                    Settings.getSetting("portmap_drive_motor_front_left", Integer.class),
+                    Settings.getSetting("portmap_drive_motor_rear_left", Integer.class), true);
             motorControllerPairRight = new MotorControllersDriveBase(
-                    Settings.getSetting("PORTMAP.FrontRight", Integer.class),
-                    Settings.getSetting("PORTMAP.RearRight", Integer.class), false);
+                    Settings.getSetting("portmap_drive_motor_front_right", Integer.class),
+                    Settings.getSetting("portmap_drive_motor_rear_right", Integer.class), false);
         }
 
         isActive = true;
