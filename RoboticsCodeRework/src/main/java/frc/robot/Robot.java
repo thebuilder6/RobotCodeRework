@@ -46,11 +46,11 @@ public class Robot extends TimedRobot {
     Settings.loadSettings();
 
     robotMemoryName = Preferences.getString("ROBOT_NAME", defaultRobotName);
-    Settings.loadSettingsFromFile(robotMap.get(robotMemoryName));
+    Settings.loadBotSettings(robotMap.get(robotMemoryName));
     SmartDashboard.putString("Selected Bot", robotMemoryName);
 
-    DriveBase drivebase = DriveBase.getInstance();
-    SmartDashBoardIO smartDashBoardIO = SmartDashBoardIO.getInstance();
+    DriveBase.getInstance();
+    SmartDashBoardIO.getInstance();
     Control control = Control.getInstance();
     IMU imu = IMU.getInstance();
 

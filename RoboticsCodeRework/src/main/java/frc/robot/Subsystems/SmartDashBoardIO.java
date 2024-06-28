@@ -58,6 +58,10 @@ public class SmartDashBoardIO implements Subsystem {
 
     }
 
+    private void enterCommands() {
+
+    }
+
     @Override
     public void update() {
         calculator();

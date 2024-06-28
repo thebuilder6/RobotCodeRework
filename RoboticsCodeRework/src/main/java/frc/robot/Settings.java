@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,9 +18,7 @@ public class Settings {
     // The name of the settings file
     private static final String SETTINGS_FILE = "settings.properties";
     private static final String RESOURCE_FILE_PATH = "src/main/resources/";
-
-    private Settings() {
-    }
+    private static String botSettingsFile;
 
     /**
      * Loads settings from the settings file.
@@ -28,32 +27,42 @@ public class Settings {
         loadSettingsFromFile(SETTINGS_FILE);
     }
 
-    // Loads settings from a file
-    public static void loadSettingsFromFile(String fileName) {
+    public static void loadBotSettings(String botSettingsFile) {
+        Settings.botSettingsFile = botSettingsFile;
+        loadSettingsFromFile(botSettingsFile);
+    }
+
+    /**
+     * Loads settings from a file.
+     * @param fileName Name of the settings file.
+     */
+    private static void loadSettingsFromFile(String fileName) {
         if (fileName == null) {
             throw new IllegalArgumentException("fileName cannot be null");
         }
-        if (Settings.class.getClassLoader().getResource(fileName) != null) {
-            try (InputStream inputStream = Settings.class.getClassLoader()
-                    .getResourceAsStream(fileName)) {
-                if (inputStream == null) {
-                    throw new IOException("Resource not found: " + fileName);
-                }
-                System.out.println("Loading settings from file: " + fileName + " - " + inputStream.available());
-                properties.load(inputStream);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load settings from file: " + fileName);
-            }
-        } else {
-            System.out.println("Loading settings from file: " + RESOURCE_FILE_PATH + fileName + " - "
-                    + System.getProperty("user.dir"));
-            try (FileInputStream fileInputStream = new FileInputStream(RESOURCE_FILE_PATH + fileName)) {
-                properties.load(fileInputStream);
-                System.out.println("Settings loaded successfully from file: " + fileName);
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to load settings from file: " + fileName, e);
-            }
+
+        try (InputStream inputStream = getInputStream(fileName)) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load settings from file: " + fileName, e);
         }
+    }
+
+    /**
+     * Returns an InputStream for the specified file name.
+     * @param fileName The name of the file.
+     * @return An InputStream for the specified file name.
+     * @throws IOException If the file cannot be found.
+     */
+    private static InputStream getInputStream(String fileName) throws IOException {
+        InputStream inputStream = Settings.class.getClassLoader().getResourceAsStream(fileName);
+        if (inputStream == null) {
+            // If the file is not found in the classpath, try to load it from the resources folder
+            // this is useful if the settings file is not in the classpath
+            // e.g. when running from the IDE or in Simulation
+            inputStream = new FileInputStream(RESOURCE_FILE_PATH + fileName);
+        }
+        return inputStream;
     }
 
     /**
@@ -98,17 +107,49 @@ public class Settings {
      */
     public static void setProperty(String propertyName, String propertyValue) {
         properties.setProperty(propertyName, propertyValue);
-        persistProperties();
+        saveProperties(propertyName);
+        //warning slow performance
     }
 
     // Persists the properties to the settings file
-    private static void persistProperties() {
-        try (FileOutputStream fileOutputStream = new FileOutputStream(SETTINGS_FILE)) {
-            properties.store(fileOutputStream, null);
-        } catch (IOException e) {
-            e.printStackTrace();
+    private static void saveProperties(String propertyName) {
+        String propertyValue = properties.getProperty(propertyName);
+        if (propertyValue != null) {
+            File generalSettingsFile = new File(RESOURCE_FILE_PATH + SETTINGS_FILE);
+            if (generalSettingsFile.exists()) {
+                persistProperty(generalSettingsFile, propertyName, propertyValue);
+            }
+            if (botSettingsFile != null) {
+                File robotSettingsFile = new File(RESOURCE_FILE_PATH + botSettingsFile);
+                if (robotSettingsFile.exists()) {
+                    persistProperty(robotSettingsFile, propertyName, propertyValue);
+                }
+            }
         }
     }
+
+    private static void persistProperty(File settingsFile, String propertyName, String propertyValue) {
+        Properties temp_properties = new Properties();
+        try (FileInputStream fis = new FileInputStream(settingsFile)) {
+            temp_properties.load(fis);
+            String settingsPropertyValue = temp_properties.getProperty(propertyName);
+            if (!propertyValue.equals(settingsPropertyValue)) {
+                temp_properties.setProperty(propertyName, propertyValue);
+                temp_properties.store(new FileOutputStream(settingsFile), null);
+            }
+        } catch (IOException ignored) {
+        }
+    }
+
+    // TODO Implement this
+
+    // Check if the property exists in the genral settings file
+
+    // Check if the property exists in the robot specific settings file
+
+    // Check if the property value is different from the settings file value
+
+    // Save the property value to the settings file
 
     private static <T> T cast(String value, Class<T> type) {
         if (type == String.class) {
