@@ -40,4 +40,13 @@ public class SubsystemManager
     {
         return subsystems;
     }
+
+    public static Subsystem getSubsystem(String name){
+        for (Subsystem subsystem : subsystems){
+            if (subsystem.getName().equals(name)){
+                return subsystem;
+            }
+        }
+        return null;
+    }    
 }

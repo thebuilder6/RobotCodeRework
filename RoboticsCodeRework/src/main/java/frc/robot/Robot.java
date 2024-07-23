@@ -51,8 +51,8 @@ public class Robot extends TimedRobot {
 
     DriveBase.getInstance();
     SmartDashBoardIO.getInstance();
-    Control control = Control.getInstance();
-    IMU imu = IMU.getInstance();
+    Control.getInstance();
+    IMU.getInstance();
 
     SubsystemManager.initializeAllSubsystems();
   }
