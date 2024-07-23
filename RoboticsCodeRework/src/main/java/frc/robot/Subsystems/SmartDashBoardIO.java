@@ -30,8 +30,6 @@ public class SmartDashBoardIO implements Subsystem {
         SmartDashboard.putNumber("Input2", 0);
         SmartDashboard.putNumber("output", 0);
         SmartDashboard.putBoolean("calculate", false);
-        SmartDashboard.putString("Command Line", "");
-        SmartDashboard.putBoolean("Enter Command", false);
         isActive = true;
     }
 
