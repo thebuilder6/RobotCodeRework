@@ -1,2 +1,13 @@
 Debug levels?
+Genaric output methods and types 
+output menu
+settings menu gui
+Gui sim robot 
+command system to run robot commands from SmDb
+command system prints method output 
+remove command manager from SmartDashboard IO 
 drive base motor inversion
+
+Big tasks
+    Output/Debug manager
+    Command manager

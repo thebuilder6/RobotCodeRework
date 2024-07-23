@@ -30,6 +30,8 @@ public class SmartDashBoardIO implements Subsystem {
         SmartDashboard.putNumber("Input2", 0);
         SmartDashboard.putNumber("output", 0);
         SmartDashboard.putBoolean("calculate", false);
+        SmartDashboard.putString("Command Line", "");
+        SmartDashboard.putBoolean("Enter Command", false);
         isActive = true;
     }
 
@@ -59,12 +61,21 @@ public class SmartDashBoardIO implements Subsystem {
     }
 
     private void enterCommands() {
-
+        if (SubsystemManager.getSubsystem("CommandManager") == null) {
+            return;
+        }
+        String command = SmartDashboard.getString("Command Line", "");
+        if (SmartDashboard.getBoolean("Enter Command", false)) {
+            CommandManager commandManager = CommandManager.getInstance();
+            commandManager.executeCommand(command);
+            SmartDashboard.putBoolean("Enter Command", false);
+        }
     }
 
     @Override
     public void update() {
         calculator();
+        enterCommands();
 
     }
 }
