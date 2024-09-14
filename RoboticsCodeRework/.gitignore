@@ -2,6 +2,9 @@
 # If you remove items from this file, intellisense might break.
 
 ### C++ ###
+#Frc 
+src/main/java/frc/robot/Versioning/BuildConstants.java
+
 # Prerequisites
 *.d
 
@@ -170,6 +173,7 @@ out/
 
 # Simulation GUI and other tools window save file
 *-window.json
+*-simgui.json
 
 # Simulation data log directory
 logs/

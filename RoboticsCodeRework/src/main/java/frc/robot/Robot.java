@@ -9,6 +9,7 @@ import frc.robot.Subsystems.DriveBase;
 import frc.robot.Subsystems.IMU;
 import frc.robot.Subsystems.SmartDashBoardIO;
 import frc.robot.Subsystems.SubsystemManager;
+import frc.robot.Versioning.BuildConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +49,15 @@ public class Robot extends TimedRobot {
     robotMemoryName = Preferences.getString("ROBOT_NAME", defaultRobotName);
     Settings.loadBotSettings(robotMap.get(robotMemoryName));
     SmartDashboard.putString("Selected Bot", robotMemoryName);
+
+    String versionInfoString = "PROJECT_NAME: " + BuildConstants.MAVEN_NAME + "\n" +
+        "GIT_BRANCH: " + BuildConstants.GIT_BRANCH + "\n" +
+        "VERSION: " + BuildConstants.VERSION + "\n" +
+        "GIT_REVISION: " + BuildConstants.GIT_REVISION + "\n" +
+        "GIT_DATE: " + BuildConstants.GIT_DATE + "\n" +
+        "BUILD_DATE: " + BuildConstants.BUILD_DATE + "\n";
+
+    SmartDashboard.putString("Version Info", versionInfoString);
 
     DriveBase.getInstance();
     SmartDashBoardIO.getInstance();
