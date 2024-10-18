@@ -1,0 +1,137 @@
+# Logging System for FRC Robot
+
+## Overview
+
+This logging system is designed to provide a flexible and efficient way to handle logging within the FRC robot code. It supports multiple log handlers which can be configured to handle different types of log messages based on tags. The system allows for easy extension by creating new log handlers.
+
+## Directory Structure
+
+```
+src/main/java/frc/robot/Logging/
+├── Interfaces/
+│   ├── LogHandler.java
+│   └── ValueSupplier.java
+├── LogHandlers/
+│   ├── ErrorHandler.java
+│   ├── FileHandler.java
+│   ├── PrintHandler.java
+│   └── SmartDashboardHandler.java
+└── Logger.java
+```
+
+## Key Classes and Interfaces
+
+### Logger
+
+The `Logger` class is the central component of the logging system. It manages a list of log settings and delegates log messages to the appropriate handlers based on tags.
+
+```java
+public class Logger {
+    private static List<LogSetting> settingsList = Arrays.asList(
+        new LogSetting(".*driver.*", new SmartDashboardHandler()),
+        new LogSetting(".*programmer.*", new FileHandler("programmer.log"))
+    );
+
+    public static void log(String key, ValueSupplier<?> valueSupplier, String tags) {
+        // Implementation...
+    }
+}
+```
+
+### LogHandler Interface
+
+The `LogHandler` interface defines the method that must be implemented by all log handlers.
+
+```java
+public interface LogHandler {
+    void handleLog(String key, Object value);
+}
+```
+
+### ValueSupplier Interface
+
+The `ValueSupplier` interface is used to supply the value to be logged. It is only invoked if there are matching log handlers.
+
+```java
+public interface ValueSupplier<T> {
+    T get();
+}
+```
+
+### Log Handlers
+
+Several log handlers are provided by default:
+
+- **PrintHandler**: Handles log messages by printing them to the console.
+- **FileHandler**: Writes log messages to a file.
+- **SmartDashboardHandler**: Displays log messages on the Smart Dashboard.
+- **ErrorHandler**: Handles error messages and displays them on the Smart Dashboard.
+
+## Usage
+
+### Logging a Message
+
+To log a message, use the `Logger.log` method. You need to provide a key, a `ValueSupplier` for the value, and a comma-separated string of tags.
+
+```java
+Logger.log("myKey", () -> "Hello, world!", "info,driver");
+```
+
+### Custom Log Handler
+
+To create a custom log handler, implement the `LogHandler` interface and define the `handleLog` method.
+
+```java
+public class MyCustomHandler implements LogHandler {
+    @Override
+    public void handleLog(String key, Object value) {
+        // Custom handling logic
+    }
+}
+```
+
+Then, add it to the `settingsList` in the `Logger` class.
+
+```java
+settingsList.add(new LogSetting(".*custom.*", new MyCustomHandler()));
+```
+
+### Example: ErrorHandler
+
+The `ErrorHandler` logs errors and displays them on the Smart Dashboard.
+
+```java
+public class ErrorHandler implements LogHandler {
+    private List<String> errors = new ArrayList<>();
+    
+    @Override
+    public void handleLog(String key, Object value) {
+        if (value instanceof Throwable) {
+            errors.add(key + ": " + value);
+        } else {
+            errors.add(key + ": " + String.valueOf(value));
+        }
+        SmartDashboard.putString("Errors", String.join("\n", errors));
+    }
+}
+```
+
+### Adding a Log Setting
+
+You can add additional log settings to handle different types of log messages.
+
+```java
+LogSetting customSetting = new LogSetting(".*customtag.*", new MyCustomHandler());
+settingsList.add(customSetting);
+```
+
+## Configuration
+
+You can configure the logging system by modifying the `settingsList` in the `Logger` class to include the desired `LogSetting` objects. Each `LogSetting` consists of a regex pattern for matching tags and a `LogHandler`.
+
+## Troubleshooting
+
+- **Log Messages Not Displayed**: Ensure that the log settings are correctly configured and that the log handlers are properly registered.
+- **Incorrect Log Levels**: Verify that the tags provided match the regex patterns defined in the log settings.
+
+This README and guide should help you get started with the logging system in your FRC robot code. Feel free to modify and expand it as needed based on your specific requirements.
