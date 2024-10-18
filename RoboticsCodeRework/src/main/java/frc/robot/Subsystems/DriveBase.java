@@ -18,6 +18,7 @@ public class DriveBase implements Subsystem {
     private DriveBase() {
         if (Settings.getSetting("subsystem_drivebase_enabled", Boolean.class)) {
             SubsystemManager.registerSubsystem(this);
+            SubsystemManager.registerSubsystem(instance);
         } else {
             isActive = false;
         }
