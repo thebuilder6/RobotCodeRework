@@ -1,5 +1,8 @@
 package frc.robot.Subsystems;
 
+import frc.robot.Logging.LogHandlers.*;
+import frc.robot.Logging.Logger;
+
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Settings;
@@ -18,7 +21,7 @@ public class DriveBase implements Subsystem {
     private DriveBase() {
         if (Settings.getSetting("subsystem_drivebase_enabled", Boolean.class)) {
             SubsystemManager.registerSubsystem(this);
-            SubsystemManager.registerSubsystem(instance);
+            //SubsystemManager.registerSubsystem(instance);
         } else {
             isActive = false;
         }
@@ -63,9 +66,9 @@ public class DriveBase implements Subsystem {
 
     @Override
     public void log() {
-        SmartDashboard.putBoolean(getName() + "/isActive", isActive);
-        SmartDashboard.putBoolean(getName() + "/LeftIsActive", motorControllerPairLeft != null);
-        SmartDashboard.putBoolean(getName() + "/RightIsActive", motorControllerPairRight != null);
+        Logger.log(getName() + "/isActive", () -> isActive, getName() + ",subsystem");
+        Logger.log(getName() + "/LeftIsActive", () -> (motorControllerPairLeft != null), getName() + ",programmer");
+        Logger.log(getName() + "/RightIsActive", () -> (motorControllerPairRight != null), getName() + ",programmer");
     }
 
     @Override

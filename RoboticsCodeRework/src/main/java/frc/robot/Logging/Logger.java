@@ -9,10 +9,11 @@ import java.util.Set;
 import frc.robot.Logging.LogHandlers.*;
 import frc.robot.Logging.Interfaces.*;
 
-class Logger {
+public class Logger {
     // Mapping from glob patterns to output handlers
     private static List<LogSetting> settingsList = Arrays.asList(
             new LogSetting(".*driver.*", new SmartDashboardHandler()),
+
             new LogSetting(".*programmer.*", new FileHandler("programmer.log"))
     // Add more settings as needed
     );
@@ -36,6 +37,7 @@ class Logger {
                     handlersToInvoke.add(setting.handler);
                     break; // Avoid duplicate logging for the same handler
                 }
+
             }
         }
 
@@ -46,4 +48,5 @@ class Logger {
             }
         }
     }
+
 }
